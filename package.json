@@ -10,9 +10,11 @@
   "type": "commonjs",
   "devDependencies": {
     "@playwright/test": "^1.62.1",
+    "@types/dotenv": "^6.1.1",
     "@types/node": "^26.1.2"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.111.0"
+    "@supabase/supabase-js": "^2.111.0",
+    "dotenv": "^17.4.2"
   }
 }

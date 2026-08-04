@@ -17,9 +17,9 @@ export async function saveListings(listings: any[]) {
     .upsert(
       listings.map(l => ({
         title: l.title,
-        price_number: l.totalPrice,
+        price_number: l.price_number,
         price: l.price,
-        location: l.location,
+        locationDate: l.locationDate,
         link: l.link,
         source: l.source,
         scraped_at: new Date().toISOString()

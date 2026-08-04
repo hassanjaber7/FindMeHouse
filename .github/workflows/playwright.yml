@@ -5,8 +5,8 @@ on:
   pull_request:
     branches: [ main, master ]
   workflow_dispatch:
-  # schedule:
-  #   - cron: '47  * * * *'
+  schedule:
+    - cron: '47  * * * *'
 
 jobs:
   test:
@@ -16,6 +16,8 @@ jobs:
     env:
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
     permissions:
       contents: write  # This allows pushing to the repository
     if: github.repository != 'hassanjaber7/FindMeHouse' || true

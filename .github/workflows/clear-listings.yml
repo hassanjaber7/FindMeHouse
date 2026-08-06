@@ -32,19 +32,29 @@ jobs:
     
     - name: Clear listings from Supabase
       run: |
-        node -e "
-          const { createClient } = require('@supabase/supabase-js');
+        node <<'EOF'
+        const { createClient } = require('@supabase/supabase-js');
+        
+        const supabase = createClient(
+          process.env.SUPABASE_URL,
+          process.env.SUPABASE_PUBLISHABLE_KEY
+        );
+        
+        async function clearListings() {
+          console.log('🗑️ Clearing listings from Supabase...');
           
-          const supabase = createClient(
-            process.env.SUPABASE_URL,
-            process.env.SUPABASE_PUBLISHABLE_KEY
-          );
+          const { data, error } = await supabase
+            .from('listings')
+            .delete()
+            .neq('id', '00000000-0000-0000-0000-000000000000');
           
-          async function clearListings() {
-            console.log('🗑️ Clearing listings from Supabase...');
-            
-           
-            const { data, error } = await supabase
-              .from('listings')
-              .delete()
-              .neq('id', '00000000-0000-0000-0000-000000000000');
+          if (error) {
+            console.error('❌ Error clearing listings:', error);
+            process.exit(1);
+          }
+          
+          console.log('✅ Listings cleared from Supabase at', new Date().toISOString());
+        }
+        
+        clearListings();
+        EOF

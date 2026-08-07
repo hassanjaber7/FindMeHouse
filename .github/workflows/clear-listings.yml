@@ -15,7 +15,7 @@ jobs:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
     
-    # ✅ Only need contents: write for committing the state file
+    # Only need contents: write for committing the state file
     permissions:
       contents: write
     

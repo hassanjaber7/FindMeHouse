@@ -232,6 +232,11 @@
 
         <form id="subscribeForm" novalidate>
             <div class="form-group">
+                <label for="email">📧 Email</label>
+                <input type="email" id="email" placeholder="e.g., example@mail.com" required />
+                <div class="hint">Enter your email address to receive alerts</div>
+            </div>
+            <div class="form-group">
                 <label for="city">📍 City</label>
                 <input type="text" id="city" placeholder="e.g., Warsaw, Krakow, Gdansk" required />
                 <div class="hint">Enter the city where you want to search for apartments</div>
@@ -262,20 +267,14 @@
 
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // ============================================
-        // ✅ CONFIGURATION - REPLACE THESE VALUES!
-        // ============================================
+        const SUPABASE_URL = process.env.SUPABASE_URL;
+        const SUPABASE_PUBLISHABLE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY;
 
-        // 🔑 Your Telegram bot token from @BotFather
-        const TELEGRAM_BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE';
+        // ✅ Create Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-        // 👤 Your personal Telegram chat ID (where you receive notifications)
-        const ADMIN_CHAT_ID = 'YOUR_CHAT_ID_HERE';
-
-        // ============================================
-        // DOM REFERENCES
-        // ============================================
 
         const form = document.getElementById('subscribeForm');
         const cityInput = document.getElementById('city');
@@ -346,51 +345,59 @@
             if (!validateForm()) return;
 
             const city = cityInput.value.trim();
-            const minPrice = minPriceInput.value.trim();
-            const maxPrice = maxPriceInput.value.trim();
+            const minPrice = parseInt(minPriceInput.value.trim());
+            const maxPrice = parseInt(maxPriceInput.value.trim());
 
             setLoading(true);
-            showMessage('⏳ Subscribing...', 'info');
+            showMessage('⏳ Saving subscription...', 'info');
 
             try {
+                // ✅ Save to Supabase (instead of just Telegram)
+                const { data, error } = await supabase
+                    .from('users')  // Your users table
+                    .insert([
+                        {
+                            chat_id: 'pending',  // Will be updated when user messages bot
+                            city: city,
+                            min_price: minPrice,
+                            max_price: maxPrice,
+                            active: true,
+                            subscribed_at: new Date().toISOString()
+                        }
+                    ]);
+
+                if (error) {
+                    console.error('Supabase error:', error);
+                    showMessage(`❌ Database error: ${error.message}`, 'error');
+                    return;
+                }
+
+                // ✅ Also send Telegram notification to admin
                 const callbackData = `confirm_${city}|${minPrice}|${maxPrice}`;
 
-                const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         chat_id: ADMIN_CHAT_ID,
-                        text: `📱 *New Subscriber Request!*\n\n` +
-                              `📍 *City:* ${city}\n` +
-                              `💰 *Min Price:* ${minPrice} PLN\n` +
-                              `💰 *Max Price:* ${maxPrice} PLN\n` +
-                              `📅 *Date:* ${new Date().toLocaleString()}\n` +
-                              `🌐 *Source:* Website`,
+                        text: `📱 *New Subscriber Request!*\n\n📍 City: ${city}\n💰 ${minPrice} - ${maxPrice} PLN`,
                         parse_mode: 'Markdown',
                         reply_markup: {
                             inline_keyboard: [[
-                                { text: '✅ Confirm Subscription', callback_data: callbackData }
+                                { text: '✅ Confirm', callback_data: callbackData }
                             ]]
                         }
                     })
                 });
 
-                const data = await response.json();
-
-                if (data.ok) {
-                    showMessage(`✅ Subscription request sent! Check your Telegram to confirm.`, 'success');
-                    cityInput.value = '';
-                    minPriceInput.value = '';
-                    maxPriceInput.value = '';
-                } else {
-                    showMessage(`❌ ${data.description || 'Something went wrong. Please try again.'}`, 'error');
-                }
+                showMessage(`✅ Subscribed! You'll receive alerts for ${city}.`, 'success');
+                cityInput.value = '';
+                minPriceInput.value = '';
+                maxPriceInput.value = '';
 
             } catch (error) {
                 console.error('Error:', error);
-                showMessage(`❌ Could not subscribe. Please try again later.`, 'error');
+                showMessage(`❌ Could not subscribe. Please try again.`, 'error');
             }
 
             setLoading(false);
@@ -438,6 +445,20 @@
             }
         });
 
+        // You can check if a user with this chat_id already exists
+        async function checkExistingUser(chatId) {
+            const { data, error } = await supabase
+                .from('users')
+                .select('*')
+                .eq('chat_id', chatId)
+                .maybeSingle();
+
+            if (error) {
+                console.error('Error checking user:', error);
+                return null;
+            }
+            return data;
+        }
         console.log('🚀 Apartment Alerts subscription page loaded!');
     </script>
 

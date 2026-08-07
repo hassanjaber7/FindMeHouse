@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,6 +37,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -206,13 +208,16 @@
             .container {
                 padding: 30px 20px;
             }
+
             .header h1 {
                 font-size: 22px;
             }
+
             .form-group input {
                 font-size: 14px;
                 padding: 12px 14px;
             }
+
             .price-row {
                 flex-direction: column;
                 gap: 0;
@@ -220,6 +225,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="container">
@@ -237,9 +243,26 @@
                 <div class="hint">Enter your email address to receive alerts</div>
             </div>
             <div class="form-group">
+                <label for="realEstateType">Real Estate Type</label>
+                <select id="realEstateType" class="dropdown">
+                    <option value="">Select a real estate type...</option>
+                    <option value="Apartment">Apartment</option>
+                    <option value="House">House</option>
+                    <option value="Studio">Studio</option>
+                    <option value="Other">Other...</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="city">📍 City</label>
-                <input type="text" id="city" placeholder="e.g., Warsaw, Krakow, Gdansk" required />
-                <div class="hint">Enter the city where you want to search for apartments</div>
+                <select id="city" class="dropdown">
+                    <option value="">Select a city...</option>
+                    <option value="Warsaw">Warsaw</option>
+                    <option value="Krakow">Krakow</option>
+                    <option value="Gdansk">Gdansk</option>
+                    <option value="Poznan">Poznan</option>
+                    <option value="Wroclaw">Wroclaw</option>
+                    <option value="Lodz">Lodz</option>
+                </select>
             </div>
 
             <div class="price-row">
@@ -339,7 +362,7 @@
         // ✅ FORM SUBMISSION - Telegram API Call
         // ============================================
 
-        form.addEventListener('submit', async function(e) {
+        form.addEventListener('submit', async function (e) {
             e.preventDefault();
 
             if (!validateForm()) return;
@@ -407,7 +430,7 @@
         // UNSUBSCRIBE
         // ============================================
 
-        unsubscribeLink.addEventListener('click', function(e) {
+        unsubscribeLink.addEventListener('click', function (e) {
             e.preventDefault();
 
             const city = cityInput.value.trim();
@@ -426,20 +449,20 @@
                     parse_mode: 'Markdown',
                 })
             })
-            .then(res => res.json())
-            .then(() => {
-                showMessage(`✅ Unsubscribe request sent.`, 'success');
-                cityInput.value = '';
-                minPriceInput.value = '';
-                maxPriceInput.value = '';
-            })
-            .catch(() => {
-                showMessage(`❌ Could not unsubscribe. Please try again.`, 'error');
-            });
+                .then(res => res.json())
+                .then(() => {
+                    showMessage(`✅ Unsubscribe request sent.`, 'success');
+                    cityInput.value = '';
+                    minPriceInput.value = '';
+                    maxPriceInput.value = '';
+                })
+                .catch(() => {
+                    showMessage(`❌ Could not unsubscribe. Please try again.`, 'error');
+                });
         });
 
         // Keyboard shortcut
-        cityInput.addEventListener('keydown', function(e) {
+        cityInput.addEventListener('keydown', function (e) {
             if (e.key === 'Enter') {
                 form.dispatchEvent(new Event('submit'));
             }
@@ -463,4 +486,5 @@
     </script>
 
 </body>
+
 </html>

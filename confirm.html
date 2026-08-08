@@ -6,9 +6,11 @@
 <body>
     <div id="status">⏳ Confirming your subscription...</div>
     <div id="details"></div>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // ✅ Supabase client (only for getting session)
+        const SUPABASE_URL = 'https://qjifzezqbrdlyjuzggwc.supabase.co';
+        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_wkYphmAXQKQPdgBtixtK6Q_Fv7Dz4oL';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
         (async function() {

@@ -122,7 +122,7 @@
 
         
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
         // ============================================
         // ✅ DOM REFERENCES
@@ -193,7 +193,7 @@
                 localStorage.setItem('pending_subscription', JSON.stringify(subscriptionData));
 
                 // ✅ 5. Send the magic link via Supabase
-                const { error } = await supabase.auth.signInWithOtp({
+                const { error } = await supabaseClient.auth.signInWithOtp({
                     email: email,
                     options: {
                         // ⚠️ IMPORTANT: This must be your actual domain

@@ -76,7 +76,7 @@
 
         
 //const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
         // ============================================
         // ✅ MAGIC LINK CONFIRMATION LOGIC
@@ -88,7 +88,7 @@
 
             try {
                 // 1️⃣ Get the current session (user is now authenticated via magic link)
-                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+                const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
 
                 if (sessionError || !session) {
                     statusEl.innerHTML = `
@@ -121,7 +121,7 @@
                 }
 
                 // 3️⃣ Save the user's subscription preferences to Supabase
-                const { error: insertError } = await supabase
+                const { error: insertError } = await supabaseClient
                     .from('users')
                     .insert({
                         auth_user_id: user.id,
@@ -140,7 +140,7 @@
                     // Check if user already exists
                     if (insertError.code === '23505') { // Unique violation
                         // User already exists, update their preferences instead
-                        const { error: updateError } = await supabase
+                        const { error: updateError } = await supabaseClient
                             .from('users')
                             .update({
                                 city: pendingData.city,

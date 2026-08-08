@@ -179,18 +179,28 @@
             showMessage('⏳ Sending magic link...', 'info');
 
             try {
-                // ✅ 4. Store subscription preferences temporarily (before email verification)
-                // This data will be retrieved on the confirmation page
-                const subscriptionData = {
-                    email: email,
-                    city: city,
-                    minPrice: minPrice,
-                    maxPrice: maxPrice,
-                    timestamp: new Date().toISOString()
-                };
+                
+                const response = await fetch('/api/preConfirmation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        auth_user_id: user.id,
+                        email: email,
+                        city: city,
+                        min_price: minPrice,
+                        max_price: maxPrice,
+                    }),
+                });
 
-                // Save to localStorage (or you could use sessionStorage)
-                localStorage.setItem('pending_subscription', JSON.stringify(subscriptionData));
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Something went wrong');
+                }
+
+                
 
                 // ✅ 5. Send the magic link via Supabase
                 const { error } = await supabaseClient.auth.signInWithOtp({

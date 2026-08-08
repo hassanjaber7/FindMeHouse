@@ -30,3 +30,4 @@ export async function saveListings(listings: any[]) {
   if (error) console.error('Error saving:', error);
   else console.log(`✅ Saved ${listings.length} listings`);
 }
+

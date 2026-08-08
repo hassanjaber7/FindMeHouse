@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirming Subscription - Apartment Alerts</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .emoji { font-size: 60px; margin-bottom: 10px; }
+        h1 { font-size: 28px; color: #1a202c; margin-bottom: 10px; }
+        .message { margin: 20px 0; color: #4a5568; line-height: 1.6; }
+        .loading { color: #667eea; font-weight: 600; }
+        .success { color: #38a169; }
+        .error { color: #e53e3e; }
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            text-decoration: none;
+            margin-top: 15px;
+        }
+        .btn:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="emoji">📧</div>
+        <h1>Confirming Subscription</h1>
+        <div id="status" class="message">
+            <div class="spinner"></div>
+            <div class="loading">⏳ Verifying your email...</div>
+        </div>
+        <div id="details" style="font-size: 14px; color: #a0aec0; margin-top: 10px;"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // ============================================
+        // ✅ CONFIGURATION - REPLACE WITH YOUR VALUES!
+        // ============================================
+
+        const SUPABASE_URL = process.env.SUPABASE_URL;
+        const SUPABASE_PUBLISHABLE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY;
+
+        
+//const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+        // ============================================
+        // ✅ MAGIC LINK CONFIRMATION LOGIC
+        // ============================================
+
+        (async function() {
+            const statusEl = document.getElementById('status');
+            const detailsEl = document.getElementById('details');
+
+            try {
+                // 1️⃣ Get the current session (user is now authenticated via magic link)
+                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+                if (sessionError || !session) {
+                    statusEl.innerHTML = `
+                        <div style="font-size: 48px; margin-bottom: 10px;">🔗</div>
+                        <div class="error">❌ Invalid or expired link.</div>
+                        <div style="margin-top: 10px; font-size: 14px;">
+                            Please try subscribing again with your email.
+                        </div>
+                        <a href="/" class="btn">Go Back</a>
+                    `;
+                    return;
+                }
+
+                // ✅ User is authenticated!
+                const user = session.user;
+
+                // 2️⃣ Get the pending subscription data from localStorage
+                const pendingData = JSON.parse(localStorage.getItem('pending_subscription') || '{}');
+
+                if (!pendingData.city) {
+                    statusEl.innerHTML = `
+                        <div style="font-size: 48px; margin-bottom: 10px;">⚠️</div>
+                        <div class="error">❌ Subscription data not found.</div>
+                        <div style="margin-top: 10px; font-size: 14px;">
+                            Please try subscribing again.
+                        </div>
+                        <a href="/" class="btn">Go Back</a>
+                    `;
+                    return;
+                }
+
+                // 3️⃣ Save the user's subscription preferences to Supabase
+                const { error: insertError } = await supabase
+                    .from('users')
+                    .insert({
+                        auth_user_id: user.id,
+                        email: user.email,
+                        city: pendingData.city,
+                        min_price: pendingData.minPrice,
+                        max_price: pendingData.maxPrice,
+                        active: true,
+                        email_verified: true,
+                        subscribed_at: new Date().toISOString(),
+                    });
+
+                if (insertError) {
+                    console.error('Insert error:', insertError);
+
+                    // Check if user already exists
+                    if (insertError.code === '23505') { // Unique violation
+                        // User already exists, update their preferences instead
+                        const { error: updateError } = await supabase
+                            .from('users')
+                            .update({
+                                city: pendingData.city,
+                                min_price: pendingData.minPrice,
+                                max_price: pendingData.maxPrice,
+                                active: true,
+                                updated_at: new Date().toISOString(),
+                            })
+                            .eq('auth_user_id', user.id);
+
+                        if (updateError) {
+                            statusEl.innerHTML = `
+                                <div style="font-size: 48px; margin-bottom: 10px;">❌</div>
+                                <div class="error">❌ Error updating preferences: ${updateError.message}</div>
+                            `;
+                            return;
+                        }
+                    } else {
+                        statusEl.innerHTML = `
+                            <div style="font-size: 48px; margin-bottom: 10px;">❌</div>
+                            <div class="error">❌ Error saving preferences: ${insertError.message}</div>
+                        `;
+                        return;
+                    }
+                }
+
+                // 4️⃣ Success! Clear localStorage and show confirmation
+                localStorage.removeItem('pending_subscription');
+
+                statusEl.innerHTML = `
+                    <div style="font-size: 48px; margin-bottom: 10px;">✅</div>
+                    <div class="success">✅ Subscription Confirmed!</div>
+                    <div style="margin-top: 15px; text-align: left; background: #f7fafc; padding: 15px; border-radius: 10px;">
+                        <strong>📍 City:</strong> ${pendingData.city}<br>
+                        <strong>💰 Price Range:</strong> ${pendingData.minPrice} - ${pendingData.maxPrice} PLN<br>
+                        <strong>📧 Email:</strong> ${user.email}
+                    </div>
+                    <div style="margin-top: 15px; color: #4a5568;">
+                        You will receive alerts when new listings match your criteria.
+                    </div>
+                    <a href="/" class="btn">🏠 Go to Dashboard</a>
+                `;
+
+                detailsEl.innerHTML = `✅ Subscribed at ${new Date().toLocaleString()}`;
+
+            } catch (error) {
+                console.error('Error:', error);
+                statusEl.innerHTML = `
+                    <div style="font-size: 48px; margin-bottom: 10px;">❌</div>
+                    <div class="error">❌ Something went wrong. Please try again.</div>
+                    <a href="/" class="btn">Go Back</a>
+                `;
+            }
+        })();
+    </script>
+
+</body>
+</html>

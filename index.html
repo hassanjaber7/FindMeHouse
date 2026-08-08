@@ -194,7 +194,11 @@
                 // ✅ 5. Send the magic link via Supabase
                 const { error } = await supabase.auth.signInWithOtp({
                     email: email,
-                    
+                    options: {
+                        // ⚠️ IMPORTANT: This must be your actual domain
+                        // The user will be redirected here after clicking the magic link
+                        emailRedirectTo: 'https://hassanjaber7.github.io/FindMeHouse/confirm.html',
+                    },
                 });
 
                 if (error) {

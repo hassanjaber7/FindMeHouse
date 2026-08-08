@@ -1,4 +1,4 @@
-// api/save-users.js
+// api/preConfirmation.js
 import { createClient } from '@supabase/supabase-js';
 
 // Server-side only (secret key is safe here)
@@ -8,6 +8,21 @@ const supabaseAdmin = createClient(
 );
 
 export default async function handler(req, res) {
+    // ✅ Add CORS headers
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+    res.setHeader(
+        'Access-Control-Allow-Headers',
+        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+    );
+
+    // ✅ Handle preflight OPTIONS request
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
+    }
+
     // ✅ Only allow POST
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });

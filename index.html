@@ -1,19 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏠 Apartment Alerts - Subscribe</title>
+    <title>Subscribe - Apartment Alerts</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
@@ -21,100 +15,35 @@
             align-items: center;
             padding: 20px;
         }
-
         .container {
             background: white;
             border-radius: 20px;
             padding: 40px 50px;
-            max-width: 550px;
+            max-width: 500px;
             width: 100%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 0.5s ease-in-out;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header .icon {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
-
-        .header h1 {
-            font-size: 28px;
-            font-weight: 700;
-            color: #1a202c;
-            margin-bottom: 5px;
-        }
-
-        .header p {
-            color: #718096;
-            font-size: 16px;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 6px;
-            font-size: 14px;
-        }
-
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-size: 28px; color: #1a202c; }
+        .header p { color: #718096; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-weight: 600; color: #2d3748; margin-bottom: 6px; font-size: 14px; }
         .form-group input {
             width: 100%;
             padding: 12px 16px;
             border: 2px solid #e2e8f0;
             border-radius: 12px;
             font-size: 16px;
-            transition: border-color 0.2s, box-shadow 0.2s;
             background: #f7fafc;
-            color: #1a202c;
         }
-
         .form-group input:focus {
             outline: none;
             border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.2);
             background: white;
         }
-
-        .form-group input::placeholder {
-            color: #a0aec0;
-        }
-
-        .form-group .hint {
-            font-size: 12px;
-            color: #a0aec0;
-            margin-top: 4px;
-        }
-
-        .price-row {
-            display: flex;
-            gap: 15px;
-        }
-
-        .price-row .form-group {
-            flex: 1;
-        }
-
+        .price-row { display: flex; gap: 15px; }
+        .price-row .form-group { flex: 1; }
         .btn-submit {
             width: 100%;
             padding: 16px;
@@ -125,190 +54,89 @@
             font-size: 18px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-top: 8px;
+            margin-top: 10px;
         }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-submit:active {
-            transform: translateY(0);
-        }
-
-        .btn-submit:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .message {
-            margin-top: 20px;
-            padding: 16px;
-            border-radius: 12px;
-            font-size: 14px;
-            display: none;
-            text-align: center;
-        }
-
-        .message.success {
-            display: block;
-            background: #f0fff4;
-            color: #38a169;
-            border: 1px solid #9ae6b4;
-        }
-
-        .message.error {
-            display: block;
-            background: #fff5f5;
-            color: #e53e3e;
-            border: 1px solid #feb2b2;
-        }
-
-        .message.info {
-            display: block;
-            background: #ebf8ff;
-            color: #3182ce;
-            border: 1px solid #90cdf4;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 12px;
-            color: #a0aec0;
-        }
-
-        .footer a {
-            color: #667eea;
-            text-decoration: none;
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 0.6s linear infinite;
-            vertical-align: middle;
-            margin-right: 8px;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 30px 20px;
-            }
-
-            .header h1 {
-                font-size: 22px;
-            }
-
-            .form-group input {
-                font-size: 14px;
-                padding: 12px 14px;
-            }
-
-            .price-row {
-                flex-direction: column;
-                gap: 0;
-            }
-        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(102,126,234,0.4); }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+        .message { margin-top: 20px; padding: 16px; border-radius: 12px; display: none; text-align: center; }
+        .message.success { display: block; background: #f0fff4; color: #38a169; border: 1px solid #9ae6b4; }
+        .message.error { display: block; background: #fff5f5; color: #e53e3e; border: 1px solid #feb2b2; }
+        .message.info { display: block; background: #ebf8ff; color: #3182ce; border: 1px solid #90cdf4; }
+        @media (max-width: 480px) { .container { padding: 30px 20px; } .price-row { flex-direction: column; gap: 0; } }
     </style>
 </head>
-
 <body>
 
     <div class="container">
-
         <div class="header">
-            <div class="icon">🏠</div>
-            <h1>Apartment Alerts</h1>
-            <p>Get notified when new apartments match your criteria</p>
+            <h1>🏠 Apartment Alerts</h1>
+            <p>Get notified when new listings match your criteria</p>
         </div>
 
-        <form id="subscribeForm" novalidate>
+        <form id="subscribeForm">
+            <!-- Email (No password!) -->
             <div class="form-group">
                 <label for="email">📧 Email</label>
-                <input type="email" id="email" placeholder="e.g., example@mail.com" required />
-                <div class="hint">Enter your email address to receive alerts</div>
+                <input type="email" id="email" placeholder="you@example.com" required>
+                <div class="hint" style="font-size:12px; color:#a0aec0; margin-top:5px;">
+                    We'll send a magic link to confirm your subscription
+                </div>
             </div>
-            <div class="form-group">
-                <label for="realEstateType">Real Estate Type</label>
-                <select id="realEstateType" class="dropdown">
-                    <option value="">Select a real estate type...</option>
-                    <option value="Apartment">Apartment</option>
-                    <option value="House">House</option>
-                    <option value="Studio">Studio</option>
-                    <option value="Other">Other...</option>
-                </select>
-            </div>
+
             <div class="form-group">
                 <label for="city">📍 City</label>
-                <select id="city" class="dropdown">
-                    <option value="">Select a city...</option>
-                    <option value="Warsaw">Warsaw</option>
-                    <option value="Krakow">Krakow</option>
-                    <option value="Gdansk">Gdansk</option>
-                    <option value="Poznan">Poznan</option>
-                    <option value="Wroclaw">Wroclaw</option>
-                    <option value="Lodz">Lodz</option>
-                </select>
+                <input type="text" id="city" placeholder="Warsaw" required>
             </div>
 
             <div class="price-row">
                 <div class="form-group">
                     <label for="minPrice">💰 Min Price (PLN)</label>
-                    <input type="number" id="minPrice" placeholder="e.g., 1000" min="0" required />
+                    <input type="number" id="minPrice" placeholder="1000" required>
                 </div>
                 <div class="form-group">
                     <label for="maxPrice">💰 Max Price (PLN)</label>
-                    <input type="number" id="maxPrice" placeholder="e.g., 2500" min="0" required />
+                    <input type="number" id="maxPrice" placeholder="2500" required>
                 </div>
             </div>
 
-            <button type="submit" class="btn-submit" id="submitBtn">🔔 Subscribe Now</button>
+            <button type="submit" class="btn-submit" id="submitBtn">🔔 Subscribe</button>
         </form>
 
         <div id="message" class="message"></div>
 
-        <div class="footer">
-            <p>You'll receive alerts when new listings are found. Unsubscribe anytime.</p>
-            <p style="margin-top: 5px;">
-                <a href="#" id="unsubscribeLink">Unsubscribe</a>
-            </p>
-        </div>
-
+        <p style="text-align: center; margin-top: 15px; font-size: 14px; color: #a0aec0;">
+            Already subscribed? <a href="/unsubscribe.html" style="color: #667eea;">Unsubscribe</a>
+        </p>
     </div>
 
+    <!-- ✅ Supabase Client + Magic Link Logic -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // ============================================
+        // ✅ CONFIGURATION - REPLACE WITH YOUR VALUES!
+        // ============================================
+
         const SUPABASE_URL = process.env.SUPABASE_URL;
         const SUPABASE_PUBLISHABLE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY;
 
-        // ✅ Create Supabase client
+        
+//const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
+        // ============================================
+        // ✅ DOM REFERENCES
+        // ============================================
 
         const form = document.getElementById('subscribeForm');
+        const emailInput = document.getElementById('email');
         const cityInput = document.getElementById('city');
         const minPriceInput = document.getElementById('minPrice');
         const maxPriceInput = document.getElementById('maxPrice');
         const submitBtn = document.getElementById('submitBtn');
         const messageEl = document.getElementById('message');
-        const unsubscribeLink = document.getElementById('unsubscribeLink');
 
         // ============================================
-        // HELPERS
+        // ✅ HELPERS
         // ============================================
 
         function showMessage(text, type = 'info') {
@@ -321,170 +149,80 @@
         }
 
         function setLoading(isLoading) {
-            if (isLoading) {
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = `<span class="spinner"></span> Subscribing...`;
-            } else {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '🔔 Subscribe Now';
-            }
-        }
-
-        function validateForm() {
-            const city = cityInput.value.trim();
-            const minPrice = minPriceInput.value.trim();
-            const maxPrice = maxPriceInput.value.trim();
-
-            if (!city) {
-                showMessage('📍 Please enter a city.', 'error');
-                return false;
-            }
-
-            if (!minPrice || isNaN(minPrice) || parseInt(minPrice) < 0) {
-                showMessage('💰 Please enter a valid minimum price.', 'error');
-                return false;
-            }
-
-            if (!maxPrice || isNaN(maxPrice) || parseInt(maxPrice) < 0) {
-                showMessage('💰 Please enter a valid maximum price.', 'error');
-                return false;
-            }
-
-            if (parseInt(minPrice) > parseInt(maxPrice)) {
-                showMessage('⚠️ Minimum price cannot be greater than maximum price.', 'error');
-                return false;
-            }
-
-            return true;
+            submitBtn.disabled = isLoading;
+            submitBtn.textContent = isLoading ? '⏳ Sending...' : '🔔 Subscribe';
         }
 
         // ============================================
-        // ✅ FORM SUBMISSION - Telegram API Call
+        // ✅ MAGIC LINK SUBSCRIPTION
         // ============================================
 
-        form.addEventListener('submit', async function (e) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            if (!validateForm()) return;
-
+            // 1. Get form values
+            const email = emailInput.value.trim();
             const city = cityInput.value.trim();
-            const minPrice = parseInt(minPriceInput.value.trim());
-            const maxPrice = parseInt(maxPriceInput.value.trim());
+            const minPrice = parseInt(minPriceInput.value);
+            const maxPrice = parseInt(maxPriceInput.value);
 
+            // 2. Validate
+            if (!email) { showMessage('📧 Please enter your email.', 'error'); return; }
+            if (!city) { showMessage('📍 Please enter a city.', 'error'); return; }
+            if (isNaN(minPrice) || minPrice < 0) { showMessage('💰 Please enter a valid minimum price.', 'error'); return; }
+            if (isNaN(maxPrice) || maxPrice < 0) { showMessage('💰 Please enter a valid maximum price.', 'error'); return; }
+            if (minPrice > maxPrice) { showMessage('⚠️ Min price cannot be greater than max price.', 'error'); return; }
+
+            // 3. Show loading state
             setLoading(true);
-            showMessage('⏳ Saving subscription...', 'info');
+            showMessage('⏳ Sending magic link...', 'info');
 
             try {
-                // ✅ Save to Supabase (instead of just Telegram)
-                const { data, error } = await supabase
-                    .from('users')  // Your users table
-                    .insert([
-                        {
-                            chat_id: 'pending',  // Will be updated when user messages bot
-                            city: city,
-                            min_price: minPrice,
-                            max_price: maxPrice,
-                            active: true,
-                            subscribed_at: new Date().toISOString()
-                        }
-                    ]);
+                // ✅ 4. Store subscription preferences temporarily (before email verification)
+                // This data will be retrieved on the confirmation page
+                const subscriptionData = {
+                    email: email,
+                    city: city,
+                    minPrice: minPrice,
+                    maxPrice: maxPrice,
+                    timestamp: new Date().toISOString()
+                };
 
-                if (error) {
-                    console.error('Supabase error:', error);
-                    showMessage(`❌ Database error: ${error.message}`, 'error');
-                    return;
-                }
+                // Save to localStorage (or you could use sessionStorage)
+                localStorage.setItem('pending_subscription', JSON.stringify(subscriptionData));
 
-                // ✅ Also send Telegram notification to admin
-                const callbackData = `confirm_${city}|${minPrice}|${maxPrice}`;
-
-                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: ADMIN_CHAT_ID,
-                        text: `📱 *New Subscriber Request!*\n\n📍 City: ${city}\n💰 ${minPrice} - ${maxPrice} PLN`,
-                        parse_mode: 'Markdown',
-                        reply_markup: {
-                            inline_keyboard: [[
-                                { text: '✅ Confirm', callback_data: callbackData }
-                            ]]
-                        }
-                    })
+                // ✅ 5. Send the magic link via Supabase
+                const { error } = await supabase.auth.signInWithOtp({
+                    email: email,
+                    
                 });
 
-                showMessage(`✅ Subscribed! You'll receive alerts for ${city}.`, 'success');
-                cityInput.value = '';
-                minPriceInput.value = '';
-                maxPriceInput.value = '';
+                if (error) {
+                    // ❌ Error sending magic link
+                    showMessage('❌ ' + error.message, 'error');
+                    console.error('Magic link error:', error);
+                } else {
+                    // ✅ Magic link sent successfully!
+                    showMessage(
+                        '✅ Magic link sent! 📧\n\n' +
+                        'Please check your email and click the link to confirm your subscription.\n\n' +
+                        '📩 Sent to: ' + email,
+                        'success'
+                    );
+                    form.reset();
+                }
 
             } catch (error) {
+                // ❌ Network or other error
                 console.error('Error:', error);
-                showMessage(`❌ Could not subscribe. Please try again.`, 'error');
+                showMessage('❌ Something went wrong. Please try again.', 'error');
             }
 
             setLoading(false);
         });
 
-        // ============================================
-        // UNSUBSCRIBE
-        // ============================================
-
-        unsubscribeLink.addEventListener('click', function (e) {
-            e.preventDefault();
-
-            const city = cityInput.value.trim();
-
-            if (!city) {
-                showMessage('📍 Please enter a city to unsubscribe.', 'info');
-                return;
-            }
-
-            fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: ADMIN_CHAT_ID,
-                    text: `❌ *Unsubscribe request!*\n\n📍 City: ${city}`,
-                    parse_mode: 'Markdown',
-                })
-            })
-                .then(res => res.json())
-                .then(() => {
-                    showMessage(`✅ Unsubscribe request sent.`, 'success');
-                    cityInput.value = '';
-                    minPriceInput.value = '';
-                    maxPriceInput.value = '';
-                })
-                .catch(() => {
-                    showMessage(`❌ Could not unsubscribe. Please try again.`, 'error');
-                });
-        });
-
-        // Keyboard shortcut
-        cityInput.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') {
-                form.dispatchEvent(new Event('submit'));
-            }
-        });
-
-        // You can check if a user with this chat_id already exists
-        async function checkExistingUser(chatId) {
-            const { data, error } = await supabase
-                .from('users')
-                .select('*')
-                .eq('chat_id', chatId)
-                .maybeSingle();
-
-            if (error) {
-                console.error('Error checking user:', error);
-                return null;
-            }
-            return data;
-        }
-        console.log('🚀 Apartment Alerts subscription page loaded!');
+        console.log('🚀 Subscription page loaded!');
     </script>
 
 </body>
-
 </html>

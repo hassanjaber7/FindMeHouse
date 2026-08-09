@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Confirm Subscription</title>
 </head>
+
 <body>
     <div id="status">⏳ Confirming your subscription...</div>
     <div id="details"></div>
@@ -13,7 +15,7 @@
         const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_wkYphmAXQKQPdgBtixtK6Q_Fv7Dz4oL';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-        (async function() {
+        (async function () {
             const statusEl = document.getElementById('status');
             const detailsEl = document.getElementById('details');
 
@@ -28,8 +30,7 @@
 
                 const user = session.user;
 
-                // 2️⃣ Get pending data
-                const pendingData = JSON.parse(localStorage.getItem('pending_subscription') || '{}');
+
 
                 if (!pendingData.city) {
                     statusEl.innerHTML = `❌ Subscription data not found.`;
@@ -43,11 +44,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        auth_user_id: user.id,
-                        email: user.email,
-                        city: pendingData.city,
-                        min_price: pendingData.minPrice,
-                        max_price: pendingData.maxPrice,
+                        email: email,
                     }),
                 });
 
@@ -58,7 +55,7 @@
                 }
 
                 // 4️⃣ Success!
-                localStorage.removeItem('pending_subscription');
+
 
                 statusEl.innerHTML = `
                     <div style="font-size: 48px;">✅</div>
@@ -73,7 +70,7 @@
                     <a href="/" class="btn">🏠 Go to Home</a>
                 `;
 
-                detailsEl.innerHTML = `✅ Subscribed at ${new Date().toLocaleString()}`;
+                detailsEl.innerHTML = `✅ Subscribed at ${new Date()}`;
 
             } catch (error) {
                 console.error('Error:', error);
@@ -88,4 +85,5 @@
         })();
     </script>
 </body>
+
 </html>

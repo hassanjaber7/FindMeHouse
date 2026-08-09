@@ -20,26 +20,12 @@ export default async function handler(req, res) {
         'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
     );
     // Only allow POST requests
-    if (req.method !== 'POST') {
+    if (req.method !== 'POST' && req.method !== 'PATCH') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
     try {
         const { email } = req.body;
-
-        // ✅ Validate required fields
-        if (!auth_user_id || !email || !city) {
-            return res.status(400).json({
-                error: 'Missing required fields: auth_user_id, email, city'
-            });
-        }
-
-        // ✅ Validate price range
-        if (min_price && max_price && min_price > max_price) {
-            return res.status(400).json({
-                error: 'Minimum price cannot be greater than maximum price'
-            });
-        }
 
         // ✅ Insert user preferences (admin bypasses RLS)
         const { data, error } = await supabaseAdmin
@@ -53,12 +39,6 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: error.message });
         }
 
-        // ✅ Success!
-        return res.status(200).json({
-            success: true,
-            message: 'Subscription confirmed successfully!',
-            data: data
-        });
 
     } catch (error) {
         console.error('Server error:', error);

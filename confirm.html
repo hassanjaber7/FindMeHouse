@@ -16,44 +16,45 @@
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 
+        (async function () {
 
-        // 1️⃣ Get the session (user is authenticated)
-        const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+            // 1️⃣ Get the session (user is authenticated)
+            const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
 
-        if (sessionError || !session) {
-            console.error('Error getting session:', sessionError);
-            document.getElementById('status').innerText = '❌ Invalid or expired session';
-            return;
-        }
+            if (sessionError || !session) {
+                console.error('Error getting session:', sessionError);
+                document.getElementById('status').innerText = '❌ Invalid or expired session';
+                return;
+            }
 
-        const user = session.user;
-
-
-
-
-
-        // Send data to serverless function (NOT directly to Supabase)
-        const response = await fetch('/api/subscribe', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email: user.email,
-            }),
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-            throw new Error(result.error || 'Something went wrong');
-        }
-
-        document.getElementById('status').innerText = '✅ Subscription confirmed!';
-        document.getElementById('details').innerText = `Subscribed at ${new Date()}`;
+            const user = session.user;
 
 
 
+
+
+            // Send data to serverless function (NOT directly to Supabase)
+            const response = await fetch('/api/subscribe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: user.email,
+                }),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Something went wrong');
+            }
+
+            document.getElementById('status').innerText = '✅ Subscription confirmed!';
+            document.getElementById('details').innerText = `Subscribed at ${new Date()}`;
+
+
+        })();
     </script>
 </body>
 

@@ -13,69 +13,47 @@
         // ✅ Supabase client (only for getting session)
         const SUPABASE_URL = 'https://qjifzezqbrdlyjuzggwc.supabase.co';
         const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_wkYphmAXQKQPdgBtixtK6Q_Fv7Dz4oL';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-
-        (async function () {
-            const statusEl = document.getElementById('status');
-            const detailsEl = document.getElementById('details');
-
-            try {
-                // 1️⃣ Get the session (user is authenticated)
-                const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
-
-                if (sessionError || !session) {
-                    statusEl.innerHTML = `❌ Invalid or expired link.`;
-                    return;
-                }
-
-                const user = session.user;
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 
 
-                
+        // 1️⃣ Get the session (user is authenticated)
+        const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
 
-                // 3️⃣ ✅ Send data to serverless function (NOT directly to Supabase)
-                const response = await fetch('/api/subscribe', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: user.email,
-                    }),
-                });
+        if (sessionError || !session) {
+            console.error('Error getting session:', sessionError);
+            document.getElementById('status').innerText = '❌ Invalid or expired session';
+            return;
+        }
 
-                const result = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(result.error || 'Something went wrong');
-                }
-
-                // 4️⃣ Success!
+        const user = session.user;
 
 
-                statusEl.innerHTML = `
-                    <div style="font-size: 48px;">✅</div>
-                    <div style="color: #38a169; font-size: 24px; font-weight: bold;">
-                        ${result.message || 'Subscription Confirmed!'}
-                    </div>
-                   
-                    <a href="/" class="btn">🏠 Go to Home</a>
-                `;
 
-                detailsEl.innerHTML = `✅ Subscribed at ${new Date()}`;
 
-            } catch (error) {
-                console.error('Error:', error);
-                statusEl.innerHTML = `
-                    <div style="font-size: 48px;">❌</div>
-                    <div style="color: #e53e3e; font-size: 20px;">
-                        ${error.message || 'Something went wrong'}
-                    </div>
-                    <a href="/" class="btn">Go Back</a>
-                `;
-            }
-        })();
+
+        // Send data to serverless function (NOT directly to Supabase)
+        const response = await fetch('/api/subscribe', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: user.email,
+            }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.error || 'Something went wrong');
+        }
+
+        document.getElementById('status').innerText = '✅ Subscription confirmed!';
+        document.getElementById('details').innerText = `Subscribed at ${new Date()}`;
+
+
+
     </script>
 </body>
 

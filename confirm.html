@@ -32,10 +32,7 @@
 
 
 
-                if (!pendingData.city) {
-                    statusEl.innerHTML = `❌ Subscription data not found.`;
-                    return;
-                }
+                
 
                 // 3️⃣ ✅ Send data to serverless function (NOT directly to Supabase)
                 const response = await fetch('/api/subscribe', {
@@ -62,11 +59,7 @@
                     <div style="color: #38a169; font-size: 24px; font-weight: bold;">
                         ${result.message || 'Subscription Confirmed!'}
                     </div>
-                    <div style="margin-top: 15px; background: #f7fafc; padding: 15px; border-radius: 10px;">
-                        <strong>📍 City:</strong> ${pendingData.city}<br>
-                        <strong>💰 Price Range:</strong> ${pendingData.minPrice} - ${pendingData.maxPrice} PLN<br>
-                        <strong>📧 Email:</strong> ${user.email}
-                    </div>
+                   
                     <a href="/" class="btn">🏠 Go to Home</a>
                 `;
 
